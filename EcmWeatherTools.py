@@ -14,8 +14,25 @@
 # solar projections?
 # wind projections
 
+import requests
+import pgeocode
+
+def getforecast(latlong):
+    url = 'https://api.weather.gov/points/' + str(latlong[0]) + ',' + str(latlong[1])
+
+    r = requests.get(url)
+    data = r.json()
+    
+    return data['properties']['forecast']
+
 def weekforecast(zipcode):
-    return True
+    location = tolatlong(zipcode)
+
+    URL = getforecast(location)
+
+    r = requests.get(url = URL)
+    data = r.json()['properties']['periods']
+    print(data)
 
 def solarRadiation(zipcode):
     return True
@@ -27,4 +44,9 @@ def humidityForecast(zipcode):
     return True
 
 def tolatlong(zipcode):
-    return True
+    nomi = pgeocode.Nominatim('us')
+    place = nomi.query_postal_code(zipcode)
+    return [place['latitude'], place['longitude']]
+
+
+weekforecast(14150)
